@@ -1,6 +1,6 @@
 package Pidgeon::Data::API;
 use Moose::Role;
-use namesepace::autoclean;
+use namespace::autoclean;
 
 1;
 __END__
