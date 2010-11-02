@@ -9,6 +9,9 @@ use MooseX::Types::Path::Class qw(File);
 use Pidgeon::KiokuDB;
 use Pidgeon::ExpanseClient;
 
+use DateTime;
+use Try::Tiny;
+
 extends qw(MooseX::App::Cmd::Command);
 
 with qw(
@@ -41,7 +44,7 @@ has _dir => (
     isa        => 'Pidgeon::KiokuDB',
     reader     => 'dir',
     lazy_build => 1,
-    handles    => [ 'new_scope', 'store' ]
+    handles    => [ 'new_scope', 'store', 'lookup', 'txn_do' ]
 );
 
 sub _build__dir {
@@ -54,31 +57,46 @@ sub _build__dir {
 has _le_client => (
     isa        => 'Pidgeon::ExpanseClient',
     lazy_build => 1,
-    handles    => ['trade_ministries'],
+    handles    => [ 'session_id', 'trade_ministries' ],
 );
 
 sub _build__le_client {
     my $self = shift;
-    Pidgeon::ExpanseClient->new( config => $self->le_config, );
+    Pidgeon::ExpanseClient->new(
+        config => $self->le_config,
+        debug  => $self->verbose,
+    );
 }
 
 use aliased 'Pidgeon::Model::Trade';
+
+sub save_trades {
+    my ( $self, $trades ) = @_;
+    for my $trade (@$trades) {
+        my $obj = $self->lookup( $trade->{id} ) || Trade->new($trade);
+        $obj->last_seen( DateTime->now );
+        $self->txn_do( sub { $self->store($obj); } );
+    }
+}
 
 sub execute {
     my ( $self, $opt, $args ) = @_;
     my $scope = $self->new_scope;
     for ( $self->trade_ministries ) {
-        my ( $id, $tm ) = @$_;
-        my $data = $tm->view_available_trades( building => $id );
-        my $count = $data->{trades} - scalar @{ $data->{trades} };
-        $self->store( map { Trade->new($_) } @{ $data->{trades} } );
+        my ( $id, $building ) = @$_;
+        warn "working on building $id" if $self->verbose;
+        my $data = $building->view_available_trades();
+        $self->save_trades( $data->{trades} );
+
+        my $count = $data->{trade_count} - scalar @{ $data->{trades} };
         while ( $count > 0 ) {
             state $page = 2;
-            my $data = $tm->view_available_trades(
-                building    => $id,
-                page_number => $page++,
-            );
+            warn "Checking page $page" if $self->verbose;
+            my $data = $building->view_available_trades( $page++ );
+            last unless scalar @{ $data->{trades} };
+            $self->save_trades( $data->{trades} );
             $count -= scalar @{ $data->{trades} };
+            warn $count if $self->verbose;
         }
     }
 }
