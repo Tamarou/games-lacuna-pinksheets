@@ -12,7 +12,7 @@ with qw(
 
 sub kiokudb_object_id { shift->id }
 
-has id   => ( isa => 'Str',     is => 'ro' );
+has id => ( isa => 'Str', is => 'ro', required => 1 );
 has body => ( isa => 'HashRef', is => 'ro' );
 
 has empire => (
@@ -22,16 +22,17 @@ has empire => (
     handles => {
         'empire_id'   => [ 'get', 'id' ],
         'empire_name' => [ 'get', 'name' ],
-    }
+    },
 );
 
-has ask_quantity      => ( isa => 'Str', is => 'ro' );
-has ask_description   => ( isa => 'Str', is => 'ro' );
-has ask_type          => ( isa => 'Str', is => 'ro' );
-has date_offered      => ( isa => 'Str', is => 'ro' );
-has offer_quantity    => ( isa => 'Str', is => 'ro' );
-has offer_description => ( isa => 'Str', is => 'ro' );
-has offer_type        => ( isa => 'Str', is => 'ro' );
+has ask_quantity      => ( isa => 'Str', is => 'ro', required => 1 );
+has ask_description   => ( isa => 'Str', is => 'ro', required => 1 );
+has ask_type          => ( isa => 'Str', is => 'ro', required => 1 );
+has date_offered      => ( isa => 'Str', is => 'ro', required => 1 );
+has offer_quantity    => ( isa => 'Str', is => 'ro', required => 1 );
+has offer_description => ( isa => 'Str', is => 'ro', required => 1 );
+has offer_type        => ( isa => 'Str', is => 'ro', required => 1 );
+has building          => ( isa => 'Str', is => 'ro', required => 1 );
 
 sub date_offered_as_datetime {
     my $self = shift;

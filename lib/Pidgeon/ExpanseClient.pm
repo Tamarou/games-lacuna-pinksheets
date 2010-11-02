@@ -89,5 +89,26 @@ sub _build_trade_ministries {
           @tm };
 }
 
+has transporters => (
+    isa        => 'HashRef',
+    traits     => ['Hash'],
+    lazy_build => 1,
+    handles    => { transporters => ['kv'], },
+);
+
+sub _build_transporters {
+    my $self = shift;
+    my @tm;
+    for my $pid ( $self->planet_ids ) {
+        my $buildings = $self->get_buildings_for($pid);
+        push @tm,
+          grep { $buildings->{$_}->{url} eq '/transporter' } keys %$buildings;
+    }
+    return {
+        map { $_ => $self->client->building( id => $_, type => 'Transporter' ) }
+          @tm
+    };
+}
+
 1;
 __END__
