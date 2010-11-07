@@ -1,8 +1,0 @@
-#!/usr/bin/env perl
-use 5.12.0;
-use lib qw(
-    lib
-    ext/Games-Lacuna-Client/lib
-);
-use Pidgeon::Cmd;
-Pidgeon::Cmd->run;

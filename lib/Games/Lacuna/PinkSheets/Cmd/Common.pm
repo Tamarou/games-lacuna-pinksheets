@@ -1,4 +1,4 @@
-package Pidgeon::Cmd::Common;
+package Games::Lacuna::PinkSheets::Cmd::Common;
 use Moose::Role;
 our $VERSION = '0.01';
 use namespace::autoclean;

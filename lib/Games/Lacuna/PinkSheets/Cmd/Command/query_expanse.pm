@@ -1,4 +1,4 @@
-package Pidgeon::Cmd::Command::query_expanse;
+package Games::Lacuna::PinkSheets::Cmd::Command::query_expanse;
 use 5.12.0;
 use Moose;
 our $VERSION = '0.01';
@@ -6,8 +6,8 @@ use namespace::autoclean;
 
 use XML::Toolkit::Loader;
 use MooseX::Types::Path::Class qw(File);
-use Pidgeon::KiokuDB;
-use Pidgeon::ExpanseClient;
+use Games::Lacuna::PinkSheets::KiokuDB;
+use Games::Lacuna::PinkSheets::ExpanseClient;
 
 use DateTime;
 use Try::Tiny;
@@ -15,7 +15,7 @@ use Try::Tiny;
 extends qw(MooseX::App::Cmd::Command);
 
 with qw(
-  Pidgeon::Cmd::Common
+  Games::Lacuna::PinkSheets::Cmd::Common
 );
 
 sub usage_desc { "query_expanse %o " }
@@ -37,38 +37,38 @@ has le_config => (
 has _namespace => (
     isa     => 'Str',
     reader  => 'namespace',
-    default => 'Pidgeon::Model::XML',
+    default => 'Games::Lacuna::PinkSheets::Model::XML',
 );
 
 has _dir => (
-    isa        => 'Pidgeon::KiokuDB',
+    isa        => 'Games::Lacuna::PinkSheets::KiokuDB',
     reader     => 'dir',
     lazy_build => 1,
     handles    => [ 'new_scope', 'store', 'lookup', 'txn_do' ]
 );
 
 sub _build__dir {
-    Pidgeon::KiokuDB->new(
+    Games::Lacuna::PinkSheets::KiokuDB->new(
         dsn        => shift->dsn,
         extra_args => { create => 1 }
     );
 }
 
 has _le_client => (
-    isa        => 'Pidgeon::ExpanseClient',
+    isa        => 'Games::Lacuna::PinkSheets::ExpanseClient',
     lazy_build => 1,
     handles    => [ 'session_id', 'trade_ministries', 'transporters' ],
 );
 
 sub _build__le_client {
     my $self = shift;
-    Pidgeon::ExpanseClient->new(
+    Games::Lacuna::PinkSheets::ExpanseClient->new(
         config => $self->le_config,
         debug  => $self->verbose,
     );
 }
 
-use aliased 'Pidgeon::Model::Trade';
+use aliased 'Games::Lacuna::PinkSheets::Model::Trade';
 
 sub save_trades {
     my ( $self, $trades, $type ) = @_;

@@ -1,4 +1,4 @@
-package Pidgeon::Model::Trade;
+package Games::Lacuna::PinkSheets::Model::Trade;
 our $VERSION = '0.01';
 use Moose;
 use namespace::autoclean;

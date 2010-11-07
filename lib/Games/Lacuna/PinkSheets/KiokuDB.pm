@@ -1,4 +1,4 @@
-package Pidgeon::KiokuDB;
+package Games::Lacuna::PinkSheets::KiokuDB;
 use Moose;
 use namespace::autoclean;
 
@@ -7,7 +7,7 @@ use KiokuDB::TypeMap::Entry::Set;
 
 extends qw(KiokuX::Model);
 
-with qw(Pidgeon::Data::API);
+with qw(Games::Lacuna::PinkSheets::Data::API);
 
 has columns => (
     isa        => 'ArrayRef',

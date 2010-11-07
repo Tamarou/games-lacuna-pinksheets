@@ -1,4 +1,4 @@
-package Pidgeon::ExpanseClient;
+package Games::Lacuna::PinkSheets::ExpanseClient;
 our $VERSION = '0.01';
 use Moose;
 use namespace::autoclean;

@@ -1,4 +1,4 @@
-package Pidgeon;
+package Games::Lacuna::PinkSheets;
 our $VERSION = '0.01';
 use Moose;
 use namespace::autoclean;
