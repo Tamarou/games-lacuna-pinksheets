@@ -69,18 +69,22 @@
         <nav class="unit size1of5">
             <ul>
                 <headers><h2>Ask</h2></headers>
-                [% FOREACH item IN rest.ask_items  %]
-                <li><a href="/ask/[% item %]">[% item %]</a><li>
+                [% WHILE (list = rest.ask_items.next)  %]
+                [% FOREACH item IN list %]
+                <li><a href="/ask/[% item %]">[% item.join(',') %]</a><li>
+                [% END %]
                 [% END %]
                 <headers><h2>Offer</h2></headers>
-                [% FOREACH item IN rest.offer_items  %]
-                <li><a href="/offer/[% item %]">[% item %]</a><li>
+                [% WHILE ( list = rest.offer_items.next )  %]
+                [% FOREACH item IN list %]
+                <li><a href="/offer/[% item %]">[% item.join(',') %]</a><li>
+                [% END %]
                 [% END %]
             </ul>
         </nav>
         <div id="content" class="unit size3of4 sweet-justice">
-        [% list = rest.recent.next %]
-        [% FOREACH item IN list%]
+        [% list = rest.recent_items.next %]
+        [% FOREACH item IN list %]
             <section>
                 <h2>[% item.date_offered_as_datetime.strftime("%B %d, %Y") %]</h2>
                 <div class="ask">

@@ -20,33 +20,12 @@ sub index : Path('/') ActionClass('REST') {
 
 sub index_GET {
     my ( $self, $c ) = @_;
-    my $ask_items =
-      $c->model('Kioku')->directory->backend->schema->storage->dbh_do(
-        sub {
-            my ( $storage, $dbh ) = @_;
-            my $ref = $dbh->selectall_arrayref(
-                'select distinct ask_type from entries order by ask_type');
-            return [ map { @$_ } @$ref ];
-        }
-      );
-
-    my $offer_items =
-      $c->model('Kioku')->directory->backend->schema->storage->dbh_do(
-        sub {
-            my ( $storage, $dbh ) = @_;
-            my $ref = $dbh->selectall_arrayref(
-                'select distinct offer_type from entries order by offer_type');
-            return [ map { @$_ } @$ref ];
-        }
-      );
-
-    my $recent = $c->model('Kioku')->all_objects;
     $self->status_ok(
         $c,
         entity => {
-            ask_items   => $ask_items,
-            offer_items => $offer_items,
-            recent      => $recent
+            ask_items    => $c->model('Kioku')->ask_items,
+            offer_items  => $c->model('Kioku')->offer_items,
+            recent_items => $c->model('Kioku')->recent_items,
         }
     );
 }
