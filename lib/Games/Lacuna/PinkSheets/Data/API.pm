@@ -63,10 +63,14 @@ sub recent_items {
     );
 }
 
-sub essentia_values {
+sub essentia_trades {
     my $self = shift;
-    my $rs   = $self->directory->backend->schema->resultset('entries');
-
+    my $stream = $self->directory->search( { ask_type => 'essentia' } );
+    $stream->filter(
+        sub {
+            [ grep { $_->offer_quantity > 1 } @$_ ];
+        }
+    );
 }
 
 1;
