@@ -68,7 +68,6 @@
         </headers>
         <nav class="unit size1of5">
             <ul>
-
                 <headers><h2>Offer</h2></headers>
                 [% WHILE ( list = rest.offer_items.next )  %]
                 [% FOREACH item IN list %]
@@ -79,15 +78,9 @@
         </nav>
         <div id="content" class="unit size3of4 sweet-justice">
             <section>
-                <headers><h2>[% rest.top_resources.join(', ') %]</h2></headers>
-                <img src="/graph/essentia?types=[% rest.top_resources.join(',') %]" />
+                <headers><h2>[% rest.type %]</h2></headers>
+                <img src="/graph/essentia?types=[% rest.type %]" />
             </section>
-            [% FOR resource IN rest.top_resources %]
-            <section>
-                <headers><h2>[% resource %]</h2></headers>
-                <img src="/graph/essentia?types=[% resource %];height=340" />
-            </section>
-            [% END %]
         </div>
         <footer class="unit size1of1 lastUnit">
             [% c.conf.copy %]

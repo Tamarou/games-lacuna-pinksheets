@@ -20,12 +20,45 @@ sub index : Path('/') ActionClass('REST') {
 
 sub index_GET {
     my ( $self, $c ) = @_;
+    my $k = $c->model('Kioku');
     $self->status_ok(
         $c,
         entity => {
-            ask_items    => $c->model('Kioku')->ask_items,
-            offer_items  => $c->model('Kioku')->offer_items,
-            recent_items => $c->model('Kioku')->recent_items,
+            ask_items     => $k->ask_items,
+            offer_items   => $k->offer_items,
+            top_resources => [ $k->top_resources->all ],
+        }
+    );
+}
+
+sub ask : Path('/ask') ActionClass('REST') {
+}
+
+sub ask_GET {
+    my ( $self, $c, $type ) = @_;
+    my $k = $c->model('Kioku');
+    $self->status_ok(
+        $c,
+        entity => {
+            ask_items   => $k->ask_items,
+            offer_items => $k->offer_items,
+            type        => $type,
+        }
+    );
+}
+
+sub offer : Path('/offer') ActionClass('REST') {
+}
+
+sub offer_GET {
+    my ( $self, $c, $type ) = @_;
+    my $k = $c->model('Kioku');
+    $self->status_ok(
+        $c,
+        entity => {
+            ask_items   => $k->ask_items,
+            offer_items => $k->offer_items,
+            type        => $type,
         }
     );
 }

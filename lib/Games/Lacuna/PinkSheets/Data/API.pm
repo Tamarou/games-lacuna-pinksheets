@@ -25,13 +25,27 @@ sub store_objects {
 sub ask_items {
     my $self = shift;
     $self->_sth_stream(
-        'select distinct ask_type from entries order by ask_type');
+        q[select distinct ask_type from entries order by ask_type]);
 }
 
 sub offer_items {
     my $self = shift;
     $self->_sth_stream(
-        'select distinct offer_type from entries order by offer_type');
+        q[
+    select offer_type, count(offer_type) count
+    from entries 
+    where ask_type = 'essentia' 
+    group by offer_type
+    having count > 1
+    order by offer_type
+]
+      )->filter(
+        sub {
+            {
+                [ map { $_->[0] } @$_ ]
+            }
+        }
+      );
 }
 
 sub _sth_stream {
@@ -63,12 +77,35 @@ sub recent_items {
     );
 }
 
-sub essentia_trades {
-    my $self = shift;
-    my $stream = $self->directory->search( { ask_type => 'essentia' } );
+sub top_resources {
+    my $self   = shift;
+    my $stream = $self->_sth_stream(
+        qq{
+        SELECT count(offer_type) count, offer_type 
+        FROM entries 
+        WHERE ask_type = 'essentia' 
+        GROUP BY offer_type 
+        HAVING COUNT(offer_type) > 1 
+        ORDER BY count DESC
+        LIMIT 3
+    }
+    );
+
     $stream->filter(
         sub {
-            [ grep { $_->offer_quantity > 1 } @$_ ];
+            [ map { $_->[1] } @$_ ];
+        }
+    );
+}
+
+sub essentia_trades {
+    my ( $self, $type ) = @_;
+    my $search = { ask_type => 'essentia' };
+    if ($type) { $search->{offer_type} = $type }
+    my $stream = $self->directory->search($search);
+    $stream->filter(
+        sub {
+            [ grep { $_->offer_quantity } @$_ ];
         }
     );
 }
