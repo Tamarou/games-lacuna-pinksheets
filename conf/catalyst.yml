@@ -3,7 +3,7 @@ name: 'Lacuna Expanse Pink Sheets'
 using_frontend_proxy: 1
 copy: '&copy; Tamarou- 2010 Some Rights Reserved.'
 'Model::Kioku':
-    dsn: "dbi:SQLite:site.db"
+    dsn: "dbi:mysql:pinksheets"
     extra_args:
       user: ''
       password: ''

@@ -4,7 +4,6 @@ use Moose;
 our $VERSION = '0.01';
 use namespace::autoclean;
 
-use XML::Toolkit::Loader;
 use MooseX::Types::Path::Class qw(File);
 use Games::Lacuna::PinkSheets::KiokuDB;
 use Games::Lacuna::PinkSheets::ExpanseClient;
@@ -25,6 +24,11 @@ has dsn => (
     is            => "ro",
     required      => 1,
     documentation => 'KiokuDB DSN',
+);
+
+has [qw(user pass)] => (
+	isa => 'Str',
+	is => 'ro',
 );
 
 has le_config => (
@@ -48,9 +52,14 @@ has _dir => (
 );
 
 sub _build__dir {
+    my $self = shift;
     Games::Lacuna::PinkSheets::KiokuDB->new(
-        dsn        => shift->dsn,
-        extra_args => { create => 1 }
+        dsn        => $self->dsn,
+        extra_args => { 
+		user => $self->user,
+		password => $self->pass,	
+		create => 1 
+	}
     );
 }
 

@@ -36,7 +36,7 @@ sub offer_items {
     from entries 
     where ask_type = 'essentia' 
     group by offer_type
-    having count > 1
+    having count(offer_type) > 1
     order by offer_type
 ]
       )->filter(

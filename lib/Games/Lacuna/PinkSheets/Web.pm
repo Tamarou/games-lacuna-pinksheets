@@ -17,7 +17,7 @@ use Catalyst qw(
 
 use Games::Lacuna::PinkSheets::Web::Request;
 
-# use Catalyst::Log::Log4perl;
+use Catalyst::Log::Log4perl;
 
 __PACKAGE__->config(
     name                   => 'Games::Lacuna::PinkSheets::Web',
@@ -40,8 +40,7 @@ __PACKAGE__->config(
 );
 
 __PACKAGE__->request_class('Games::Lacuna::PinkSheets::Web::Request');
-
-# __PACKAGE__->log( Catalyst::Log::Log4perl->new('conf/catalyst_logging.conf') );
+__PACKAGE__->log( Catalyst::Log::Log4perl->new('conf/catalyst_logging.conf') );
 
 __PACKAGE__->setup();
 1;
